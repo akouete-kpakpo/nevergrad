@@ -23,6 +23,7 @@ from pcse.models import Wofost72_WLP_FD
 from pcse.db import NASAPowerWeatherDataProvider
 from pcse.util import WOFOST72SiteDataProvider
 from pcse.base import ParameterProvider
+from nevergrad.functions.irrigation.common_path import IRRIGATION_DATA_DIR
 
 
 # pylint: disable=too-many-locals,too-many-statements
@@ -32,10 +33,10 @@ class Irrigation(ArrayExperimentFunction):
     variant_choice = {}
     def __init__(self, symmetry: int) -> None:
         data_dir = Path(__file__).with_name("data")
-        #urllib.request.urlretrieve(
-        #    "https://raw.githubusercontent.com/ajwdewit/pcse_notebooks/master/data/soil/ec3.soil",
-        #    str(data_dir) + "/soil/ec3.soil",
-        #)
+        urllib.request.urlretrieve(
+           "https://raw.githubusercontent.com/ajwdewit/pcse_notebooks/master/data/soil/ec3.soil",
+           Path(IRRIGATION_DATA_DIR, "soil/ec3.soil"),
+        )
         self.soil = CABOFileReader(os.path.join(data_dir, "soil", "ec3.soil"))
         param = ng.p.Array(shape=(8,), lower=(0.0), upper=(1.0)).set_name("irrigation8")
         super().__init__(self.leaf_area_index, parametrization=param, symmetry=symmetry)
@@ -47,25 +48,11 @@ class Irrigation(ArrayExperimentFunction):
         known_latitudes = {'Saint-Leger-Bridereix': 46.2861759, 'Dun-Le-Palestel': 46.3052049, 'Kolkata': 22.5414185,
         'Antananarivo': -18.9100122, 'Santiago': -33.4377756, 'Lome': 6.130419, 'Cairo': 30.0443879, 'Ouagadougou':
         12.3681873, 'Yamoussoukro': 6.809107, 'Yaounde': 3.8689867, 'Kiev': 50.4500336}
-        self.cropd = YAMLCropDataProvider()
+        self.cropd = YAMLCropDataProvider(repository="https://raw.githubusercontent.com/ajwdewit/WOFOST_crop_parameters/master/")
         for k in range(1000):
             if symmetry in self.variant_choice and k < self.variant_choice[symmetry]:
                 continue
-            self.address = np.random.RandomState(symmetry+3*k).choice(
-                [
-                    "Saint-Leger-Bridereix",
-                    "Dun-Le-Palestel",
-                    "Kolkata",
-                    "Antananarivo",
-                    "Santiago",
-                    "Lome",
-                    "Cairo",
-                    "Ouagadougou",
-                    "Yamoussoukro",
-                    "Yaounde",
-                    "Kiev",
-                ]
-            )
+            self.address = "Lome"
             if self.address in known_latitudes and self.address in known_longitudes:
                 self.weatherdataprovider = NASAPowerWeatherDataProvider(latitude=known_latitudes[self.address], longitude=known_longitudes[self.address])
             else:           
@@ -85,8 +72,7 @@ class Irrigation(ArrayExperimentFunction):
 
 
     def set_data(self, symmetry: int, k: int):
-        crop_types = [c for c in self.cropd.crop_types if "obacco" not in c]
-        self.cropname = np.random.RandomState(symmetry+3*k+1).choice(crop_types)
+        self.cropname = "rice"
         self.cropvariety = np.random.RandomState(symmetry+3*k+2).choice(list(self.cropd.get_crops_varieties()[self.cropname])
         )
         # We check if the problem is challenging.
