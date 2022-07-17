@@ -24,6 +24,7 @@ from pcse.db import NASAPowerWeatherDataProvider
 from pcse.util import WOFOST72SiteDataProvider
 from pcse.base import ParameterProvider
 from nevergrad.functions.irrigation.common_path import IRRIGATION_DATA_DIR
+import logging
 
 
 # pylint: disable=too-many-locals,too-many-statements
@@ -55,20 +56,15 @@ class Irrigation(ArrayExperimentFunction):
             self.address = "Lome"
             if self.address in known_latitudes and self.address in known_longitudes:
                 self.weatherdataprovider = NASAPowerWeatherDataProvider(latitude=known_latitudes[self.address], longitude=known_longitudes[self.address])
-            else:           
-                assert False
-                from geopy.geocoders import Nominatim
-                geolocator = Nominatim(user_agent="NG/PCSE")
-                self.location = geolocator.geocode(self.address)
-                self.weatherdataprovider = NASAPowerWeatherDataProvider(
-                    latitude=self.location.latitude, longitude=self.location.longitude
-                )
+            else:
+                msg = f"{self.address} geoloc unknown"       
+                raise AssertionError(msg)
             self.set_data(symmetry, k)
             v = [self.leaf_area_index(np.random.rand(8)) for _ in range(5)]
             if min(v) != max(v):
                 break
             self.variant_choice[symmetry] = k
-        print(f"we work on {self.cropname} with variety {self.cropvariety} in {self.address}.")
+        logging.info(f"we work on {self.cropname} with variety {self.cropvariety} in {self.address}.")
 
 
     def set_data(self, symmetry: int, k: int):
