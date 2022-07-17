@@ -50,7 +50,7 @@ class Irrigation(ArrayExperimentFunction):
         'Antananarivo': -18.9100122, 'Santiago': -33.4377756, 'Lome': 6.130419, 'Cairo': 30.0443879, 'Ouagadougou':
         12.3681873, 'Yamoussoukro': 6.809107, 'Yaounde': 3.8689867, 'Kiev': 50.4500336}
         self.cropd = YAMLCropDataProvider(repository="https://raw.githubusercontent.com/ajwdewit/WOFOST_crop_parameters/master/")
-        for k in range(1000):
+        for k in range(1):
             if symmetry in self.variant_choice and k < self.variant_choice[symmetry]:
                 continue
             self.address = "Lome"
