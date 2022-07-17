@@ -77,7 +77,7 @@ class Irrigation(ArrayExperimentFunction):
         )
         # We check if the problem is challenging.
         #print(f"testing {symmetry}: {k} {self.address} {self.cropvariety}")
-        site = WOFOST72SiteDataProvider(WAV=100, CO2=360)
+        site = WOFOST72SiteDataProvider(WAV=100)
         self.parameterprovider = ParameterProvider(soildata=self.soil, cropdata=self.cropd, sitedata=site)
 
 
