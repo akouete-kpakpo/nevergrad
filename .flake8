@@ -1,0 +1,5 @@
+[flake8]
+max-line-length=100
+docstring-convention=pep257
+ignore = E203, E266, E501, W503, F403, F401, W605, F841 #temp remove the 2 last
+exclude = explore,venv
