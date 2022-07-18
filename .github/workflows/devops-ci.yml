@@ -29,4 +29,4 @@ jobs:
     - name: Run Lint with flake8 and unit tests & test notebooks
       run: |
         make venv-activate
-        make test-all
+        make pytest var=nevergrad/functions/irrigation/ mark=ut
