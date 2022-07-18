@@ -38,12 +38,11 @@ class Irrigation(ArrayExperimentFunction):
     variant_choice = {}
 
     def __init__(self, symmetry: int) -> None:
-        data_dir = Path(__file__).with_name("data")
         urllib.request.urlretrieve(
             "https://raw.githubusercontent.com/ajwdewit/pcse_notebooks/master/data/soil/ec3.soil",
             Path(IRRIGATION_DATA_DIR, "soil/ec3.soil"),
         )
-        self.soil = CABOFileReader(os.path.join(data_dir, "soil", "ec3.soil"))
+        self.soil = CABOFileReader(Path(IRRIGATION_DATA_DIR, "soil", "ec3.soil"))
         param = ng.p.Array(shape=(8,), lower=(0.0), upper=(1.0)).set_name("irrigation8")
         super().__init__(self.leaf_area_index, parametrization=param, symmetry=symmetry)
         if os.environ.get("CIRCLECI", False):
