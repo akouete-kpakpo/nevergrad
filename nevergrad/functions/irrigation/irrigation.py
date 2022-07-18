@@ -37,7 +37,7 @@ with open(IRRIGATION_DIR / "known_geoloc.json") as fhandle:
 class Irrigation(ArrayExperimentFunction):
     variant_choice = {}
 
-    def __init__(self, symmetry: int) -> None:
+    def __init__(self, symmetry: int, n_iterations: int = 1000) -> None:
         urllib.request.urlretrieve(
             "https://raw.githubusercontent.com/ajwdewit/pcse_notebooks/master/data/soil/ec3.soil",
             Path(IRRIGATION_DATA_DIR, "soil/ec3.soil"),
@@ -51,7 +51,7 @@ class Irrigation(ArrayExperimentFunction):
         self.cropd = YAMLCropDataProvider(
             repository="https://raw.githubusercontent.com/ajwdewit/WOFOST_crop_parameters/master/"
         )
-        for k in range(1):
+        for k in range(n_iterations):
             if symmetry in self.variant_choice and k < self.variant_choice[symmetry]:
                 continue
             self.weatherdataprovider = get_weather_data_provider("Lome")
