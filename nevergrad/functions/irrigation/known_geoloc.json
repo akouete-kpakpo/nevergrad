@@ -1,0 +1,46 @@
+{
+    "Saint-Leger-Bridereix": {
+        "latitude": 46.2861759,
+        "longitude": 1.5887348
+    },
+    "Dun-Le-Palestel": {
+        "latitude": 46.3052049,
+        "longitude": 1.6641173
+    },
+    "Kolkata": {
+        "latitude": 22.5414185,
+        "longitude": 88.35769124388872
+    },
+    "Antananarivo": {
+        "latitude": -18.9100122,
+        "longitude": 47.5255809
+    },
+    "Santiago": {
+        "latitude": -33.4377756,
+        "longitude": -70.6504502
+    },
+    "Lome": {
+        "latitude": 6.130419,
+        "longitude": 1.215829
+    },
+    "Cairo": {
+        "latitude": 30.0443879,
+        "longitude": 31.2357257
+    },
+    "Ouagadougou": {
+        "latitude": 12.3681873,
+        "longitude": -1.5270944
+    },
+    "Yamoussoukro": {
+        "latitude": 6.809107,
+        "longitude": -5.273263
+    },
+    "Yaounde": {
+        "latitude": 3.8689867,
+        "longitude": 11.5213344
+    },
+    "Kiev": {
+        "latitude": 50.4500336,
+        "longitude": 30.5241361
+    }
+}
