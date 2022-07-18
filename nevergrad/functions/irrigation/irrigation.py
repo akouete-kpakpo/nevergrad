@@ -55,15 +55,7 @@ class Irrigation(ArrayExperimentFunction):
         for k in range(1):
             if symmetry in self.variant_choice and k < self.variant_choice[symmetry]:
                 continue
-            self.address = "Lome"
-            if self.address in KNOWN_GEOLOCS:
-                geoloc = KNOWN_GEOLOCS[self.address]
-                self.weatherdataprovider = NASAPowerWeatherDataProvider(
-                    latitude=geoloc["latitude"], longitude=geoloc["longitude"]
-                )
-            else:
-                msg = f"{self.address} geoloc unknown"
-                raise AssertionError(msg)
+            self.weatherdataprovider = get_weather_data_provider("Lome")
             self.set_data(symmetry, k)
             v = [self.leaf_area_index(np.random.rand(8)) for _ in range(5)]
             if min(v) != max(v):
@@ -128,3 +120,11 @@ class Irrigation(ArrayExperimentFunction):
         df.tail()
 
         return -sum([float(o["LAI"]) for o in output if o["LAI"] is not None])
+
+
+def get_weather_data_provider(address: str, known_geolocs: dict = KNOWN_GEOLOCS):
+    if address not in known_geolocs:
+        msg = f"{address} geoloc unknown"
+        raise AssertionError(msg)
+    geoloc = known_geolocs[address]
+    return NASAPowerWeatherDataProvider(latitude=geoloc["latitude"], longitude=geoloc["longitude"])
