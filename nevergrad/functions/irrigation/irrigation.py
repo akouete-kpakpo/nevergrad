@@ -10,54 +10,59 @@ https://raw.githubusercontent.com/purdue-orbital/pcse-simulation/master/Simulati
 """
 
 
-from pathlib import Path
-import urllib.request  # Necessary for people who will uncomment the part using data under EUPL license.
-import numpy as np
-import nevergrad as ng
-from ..base import ArrayExperimentFunction
+import json
+import logging
 import os
+import urllib.request
+from pathlib import Path
+
+import nevergrad as ng
+import numpy as np
 import pandas as pd
 import yaml
+from nevergrad.functions.irrigation.common_path import IRRIGATION_DATA_DIR, IRRIGATION_DIR
+from pcse.base import ParameterProvider
+from pcse.db import NASAPowerWeatherDataProvider
 from pcse.fileinput import CABOFileReader, YAMLCropDataProvider
 from pcse.models import Wofost72_WLP_FD
-from pcse.db import NASAPowerWeatherDataProvider
 from pcse.util import WOFOST72SiteDataProvider
-from pcse.base import ParameterProvider
-from nevergrad.functions.irrigation.common_path import IRRIGATION_DATA_DIR
-import logging
 
+from ..base import ArrayExperimentFunction
 
 # pylint: disable=too-many-locals,too-many-statements
+with open(IRRIGATION_DIR / "known_geoloc.json") as fhandle:
+    KNOWN_GEOLOCS = json.load(fhandle)
 
 
 class Irrigation(ArrayExperimentFunction):
     variant_choice = {}
+
     def __init__(self, symmetry: int) -> None:
         data_dir = Path(__file__).with_name("data")
         urllib.request.urlretrieve(
-           "https://raw.githubusercontent.com/ajwdewit/pcse_notebooks/master/data/soil/ec3.soil",
-           Path(IRRIGATION_DATA_DIR, "soil/ec3.soil"),
+            "https://raw.githubusercontent.com/ajwdewit/pcse_notebooks/master/data/soil/ec3.soil",
+            Path(IRRIGATION_DATA_DIR, "soil/ec3.soil"),
         )
         self.soil = CABOFileReader(os.path.join(data_dir, "soil", "ec3.soil"))
         param = ng.p.Array(shape=(8,), lower=(0.0), upper=(1.0)).set_name("irrigation8")
         super().__init__(self.leaf_area_index, parametrization=param, symmetry=symmetry)
         if os.environ.get("CIRCLECI", False):
             raise ng.errors.UnsupportedExperiment("No HTTP request in CircleCI")
-        known_longitudes = {'Saint-Leger-Bridereix': 1.5887348, 'Dun-Le-Palestel': 1.6641173, 'Kolkata':
-        88.35769124388872, 'Antananarivo': 47.5255809, 'Santiago': -70.6504502, 'Lome': 1.215829, 'Cairo': 31.2357257,
-        'Ouagadougou': -1.5270944, 'Yamoussoukro': -5.273263, 'Yaounde': 11.5213344, 'Kiev': 30.5241361}
-        known_latitudes = {'Saint-Leger-Bridereix': 46.2861759, 'Dun-Le-Palestel': 46.3052049, 'Kolkata': 22.5414185,
-        'Antananarivo': -18.9100122, 'Santiago': -33.4377756, 'Lome': 6.130419, 'Cairo': 30.0443879, 'Ouagadougou':
-        12.3681873, 'Yamoussoukro': 6.809107, 'Yaounde': 3.8689867, 'Kiev': 50.4500336}
-        self.cropd = YAMLCropDataProvider(repository="https://raw.githubusercontent.com/ajwdewit/WOFOST_crop_parameters/master/")
+
+        self.cropd = YAMLCropDataProvider(
+            repository="https://raw.githubusercontent.com/ajwdewit/WOFOST_crop_parameters/master/"
+        )
         for k in range(1):
             if symmetry in self.variant_choice and k < self.variant_choice[symmetry]:
                 continue
             self.address = "Lome"
-            if self.address in known_latitudes and self.address in known_longitudes:
-                self.weatherdataprovider = NASAPowerWeatherDataProvider(latitude=known_latitudes[self.address], longitude=known_longitudes[self.address])
+            if self.address in KNOWN_GEOLOCS:
+                geoloc = KNOWN_GEOLOCS[self.address]
+                self.weatherdataprovider = NASAPowerWeatherDataProvider(
+                    latitude=geoloc["latitude"], longitude=geoloc["longitude"]
+                )
             else:
-                msg = f"{self.address} geoloc unknown"       
+                msg = f"{self.address} geoloc unknown"
                 raise AssertionError(msg)
             self.set_data(symmetry, k)
             v = [self.leaf_area_index(np.random.rand(8)) for _ in range(5)]
@@ -66,16 +71,15 @@ class Irrigation(ArrayExperimentFunction):
             self.variant_choice[symmetry] = k
         logging.info(f"we work on {self.cropname} with variety {self.cropvariety} in {self.address}.")
 
-
     def set_data(self, symmetry: int, k: int):
         self.cropname = "rice"
-        self.cropvariety = np.random.RandomState(symmetry+3*k+2).choice(list(self.cropd.get_crops_varieties()[self.cropname])
+        self.cropvariety = np.random.RandomState(symmetry + 3 * k + 2).choice(
+            list(self.cropd.get_crops_varieties()[self.cropname])
         )
         # We check if the problem is challenging.
-        #print(f"testing {symmetry}: {k} {self.address} {self.cropvariety}")
+        # print(f"testing {symmetry}: {k} {self.address} {self.cropvariety}")
         site = WOFOST72SiteDataProvider(WAV=100)
         self.parameterprovider = ParameterProvider(soildata=self.soil, cropdata=self.cropd, sitedata=site)
-
 
     def leaf_area_index(self, x: np.ndarray):
         d0 = int(1.01 + 29.98 * x[0])
@@ -114,10 +118,10 @@ class Irrigation(ArrayExperimentFunction):
             wofost.run_till_terminate()
         except Exception as e:
             return float("inf")
-            #assert (
+            # assert (
             #    False
-            #), f"Problem!\n Dates: {d0} {d1} {d2} {d3},\n amounts: {a0}, {a1}, {a2}, {a3}\n  ({e}).\n"
-            #raise e
+            # ), f"Problem!\n Dates: {d0} {d1} {d2} {d3},\n amounts: {a0}, {a1}, {a2}, {a3}\n  ({e}).\n"
+            # raise e
 
         output = wofost.get_output()
         df = pd.DataFrame(output).set_index("day")
