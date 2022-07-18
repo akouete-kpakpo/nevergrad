@@ -19,7 +19,6 @@ torchvision>=0.11.1
 pyomo==5.7.1
 mixsimulator>=0.3.3
 hyperopt>=0.2.5
-IOHexperimenter>=0.2.8.7
 cdt>=0.5.23
 #koncept>=0.2.2  # removed because sometimes complicated
 tensorflow-estimator>=2.7.0
@@ -39,6 +38,5 @@ pcse>=5.5.0  # removed due to PCSE license issues.
 pyyaml>=5.3.1
 nlopt
 pybullet>=3.2.2
-box2d-py>=2.3.5
 glfw
 mujoco
