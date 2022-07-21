@@ -4,12 +4,15 @@
 # LICENSE file in the root directory of this source tree.
 
 import argparse
-from pathlib import Path
+import warnings
 from concurrent import futures
+from pathlib import Path
+
 import nevergrad.common.typing as tp
-from . import utils
-from . import core
-from . import plotting
+
+from . import core, plotting, utils
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 # pylint: disable=too-many-arguments
