@@ -39,6 +39,8 @@ from ..base import ArrayExperimentFunction
 with open(IRRIGATION_DIR / "known_geoloc.json") as fhandle:
     KNOWN_GEOLOCS = json.load(fhandle)
 
+dimension = 8
+
 
 SOIL_DATA_URL = URL("https://raw.githubusercontent.com/ajwdewit/pcse_notebooks/master/", "data/soil/ec3.soil")
 
@@ -60,9 +62,9 @@ class Irrigation(ArrayExperimentFunction):
         for k in range(n_iterations):
             if symmetry in self.variant_choice and k < self.variant_choice[symmetry]:
                 continue
-            self.weatherdataprovider = get_weather_data_provider(self.address)
+
             self.set_data(symmetry, k)
-            v = [self.leaf_area_index(np.random.rand(8)) for _ in range(5)]
+            v = [self.leaf_area_index(np.random.rand(dimension)) for _ in range(5)]
             if min(v) != max(v):
                 break
             self.variant_choice[symmetry] = k
