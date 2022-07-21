@@ -14,6 +14,7 @@ import json
 import logging
 import os
 import urllib.request
+import warnings
 from pathlib import Path
 
 import nevergrad as ng
@@ -21,11 +22,14 @@ import numpy as np
 import pandas as pd
 import yaml
 from nevergrad.functions.irrigation.common_path import IRRIGATION_DATA_DIR, IRRIGATION_DIR
-from pcse.base import ParameterProvider
-from pcse.db import NASAPowerWeatherDataProvider
-from pcse.fileinput import CABOFileReader, YAMLCropDataProvider
-from pcse.models import Wofost72_WLP_FD
-from pcse.util import WOFOST72SiteDataProvider
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    from pcse.base import ParameterProvider
+    from pcse.db import NASAPowerWeatherDataProvider
+    from pcse.fileinput import CABOFileReader, YAMLCropDataProvider
+    from pcse.models import Wofost72_WLP_FD
+    from pcse.util import WOFOST72SiteDataProvider
 
 from ..base import ArrayExperimentFunction
 
