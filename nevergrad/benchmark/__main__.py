@@ -25,6 +25,7 @@ def launch(
     """
     # create the data
     csvpath = Path(experiment + ".csv") if output is None else Path(output)
+    csvpath.parent.mkdir(parents=True, exist_ok=True)
     if num_workers == 1:
         df = core.compute(experiment, cap_index=cap_index, seed=seed)
     else:
@@ -35,7 +36,7 @@ def launch(
     # save data to csv
     try:
         core.save_or_append_to_csv(df, csvpath)
-    except Exception:  # pylint: disable=broad-except
+    except OSError:  # pylint: disable=broad-except
         csvpath = Path(experiment + ".csv")
         print(f"Failed to save to {output}, falling back to {csvpath}")
         core.save_or_append_to_csv(df, csvpath)
