@@ -56,7 +56,7 @@ class Irrigation(ArrayExperimentFunction):
         self.cropd = YAMLCropDataProvider(
             repository="https://raw.githubusercontent.com/ajwdewit/WOFOST_crop_parameters/master/"
         )
-        self.address = "Lome"
+        self.address = "Porto-Novo"
         for k in range(n_iterations):
             if symmetry in self.variant_choice and k < self.variant_choice[symmetry]:
                 continue
@@ -121,9 +121,6 @@ class Irrigation(ArrayExperimentFunction):
             # raise e
 
         output = wofost.get_output()
-        df = pd.DataFrame(output).set_index("day")
-        df.tail()
-
         return -sum([float(o["LAI"]) for o in output if o["LAI"] is not None])
 
 

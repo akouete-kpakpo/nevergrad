@@ -3,47 +3,46 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-import os
-import warnings
-import typing as tp
 import itertools
-import numpy as np
+import os
+import typing as tp
+import warnings
+
 import nevergrad as ng
 import nevergrad.functions.corefuncs as corefuncs
+import numpy as np
+from nevergrad.functions import (ArtificialFunction, ExperimentFunction,
+                                 FarOptimumFunction)
 from nevergrad.functions import base as fbase
-from nevergrad.functions import ExperimentFunction
-from nevergrad.functions import ArtificialFunction
-from nevergrad.functions import FarOptimumFunction
-from nevergrad.functions.fishing import OptimizeFish
-from nevergrad.functions.pbt import PBT
-from nevergrad.functions.ml import MLTuning
-from nevergrad.functions import mlda as _mlda
-from nevergrad.functions.photonics import Photonics
-from nevergrad.functions.arcoating import ARCoating
+from nevergrad.functions import control, helpers
 from nevergrad.functions import images as imagesxp
-from nevergrad.functions.powersystems import PowerSystem
-from nevergrad.functions.ac import NgAquacrop
-from nevergrad.functions.stsp import STSP
-from nevergrad.functions.rocket import Rocket
-from nevergrad.functions.irrigation import Irrigation
-from nevergrad.functions.pcse import CropSimulator
-from nevergrad.functions.mixsimulator import OptimizeMix
-from nevergrad.functions.unitcommitment import UnitCommitmentProblem
-from nevergrad.functions import control
-from nevergrad.functions import rl
-from nevergrad.functions.games import game
 from nevergrad.functions import iohprofiler
-from nevergrad.functions import helpers
+from nevergrad.functions import mlda as _mlda
+from nevergrad.functions import rl
+from nevergrad.functions.ac import NgAquacrop
+from nevergrad.functions.arcoating import ARCoating
 from nevergrad.functions.cycling import Cycling
-from .xpbase import Experiment as Experiment
-from .xpbase import create_seed_generator
-from .xpbase import registry as registry  # noqa
-from .optgroups import get_optimizers
+from nevergrad.functions.fishing import OptimizeFish
+from nevergrad.functions.games import game
+from nevergrad.functions.irrigation import Irrigation
+from nevergrad.functions.mixsimulator import OptimizeMix
+from nevergrad.functions.ml import MLTuning
+from nevergrad.functions.pbt import PBT
+from nevergrad.functions.pcse import CropSimulator
+from nevergrad.functions.photonics import Photonics
+from nevergrad.functions.powersystems import PowerSystem
+from nevergrad.functions.rocket import Rocket
+from nevergrad.functions.stsp import STSP
+from nevergrad.functions.unitcommitment import UnitCommitmentProblem
 
 # register all experiments from other files
 # pylint: disable=unused-import
 from . import frozenexperiments  # noqa
 from . import gymexperiments  # noqa
+from .optgroups import get_optimizers
+from .xpbase import Experiment as Experiment
+from .xpbase import create_seed_generator
+from .xpbase import registry as registry  # noqa
 
 # pylint: disable=stop-iteration-return, too-many-nested-blocks, too-many-locals
 
@@ -1280,11 +1279,11 @@ def rice_irrigation(seed: tp.Optional[int] = None) -> tp.Iterator[Experiment]:
     """Irrigation simulator. Maximize leaf area index,
     so that you get a lot of primary production.
     Sequential or 30 workers."""
-    funcs = [Irrigation(i) for i in range(1)]
+    funcs = [Irrigation(10)]
     seedg = create_seed_generator(seed)
-    optims = get_optimizers("basics", seed=next(seedg))
-    for budget in [25, 50, 100, 200]:
-        for num_workers in [1, 30, 60]:
+    optims = ["NGOpt10"]
+    for budget in [100]:
+        for num_workers in [30]:
             if num_workers < budget:
                 for algo in optims:
                     for fu in funcs:
