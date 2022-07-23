@@ -37,7 +37,7 @@ with open(IRRIGATION_DIR / "known_geoloc.json") as fhandle:
 class Irrigation(ArrayExperimentFunction):
     variant_choice = {}
 
-    def __init__(self, symmetry: int, n_iterations: int = 1000) -> None:
+    def __init__(self, symmetry: int, n_iterations: int = 1) -> None:
         urllib.request.urlretrieve(
             "https://raw.githubusercontent.com/ajwdewit/pcse_notebooks/master/data/soil/ec3.soil",
             Path(IRRIGATION_DATA_DIR, "soil/ec3.soil"),
@@ -51,7 +51,7 @@ class Irrigation(ArrayExperimentFunction):
         self.cropd = YAMLCropDataProvider(
             repository="https://raw.githubusercontent.com/ajwdewit/WOFOST_crop_parameters/master/"
         )
-        self.address = "Lome"
+        self.address = "Porto-Novo"
         for k in range(n_iterations):
             if symmetry in self.variant_choice and k < self.variant_choice[symmetry]:
                 continue
@@ -118,7 +118,8 @@ class Irrigation(ArrayExperimentFunction):
         output = wofost.get_output()
         df = pd.DataFrame(output).set_index("day")
         df.tail()
-
+        print(df)
+        a = df.to_csv('donnees_simu.csv', index = True)
         return -sum([float(o["LAI"]) for o in output if o["LAI"] is not None])
 
 

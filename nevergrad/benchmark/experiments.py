@@ -1280,7 +1280,7 @@ def rice_irrigation(seed: tp.Optional[int] = None) -> tp.Iterator[Experiment]:
     """Irrigation simulator. Maximize leaf area index,
     so that you get a lot of primary production.
     Sequential or 30 workers."""
-    funcs = [Irrigation(i) for i in range(1)]
+    funcs = [Irrigation(i) for i in range(17)]
     seedg = create_seed_generator(seed)
     optims = get_optimizers("basics", seed=next(seedg))
     for budget in [25, 50, 100, 200]:
@@ -1293,6 +1293,23 @@ def rice_irrigation(seed: tp.Optional[int] = None) -> tp.Iterator[Experiment]:
                         if not xp.is_incoherent:
                             yield xp
 
+
+@registry.register
+def rice_irrigation1(seed: tp.Optional[int] = None) -> tp.Iterator[Experiment]:
+    """Irrigation simulator. Maximize leaf area index,
+    so that you get a lot of primary production.
+    Sequential or 30 workers."""
+    funcs = [Irrigation(i) for i in range(1)]
+    seedg = create_seed_generator(seed)
+    optims = "NGOpt10"
+    for budget in [25, 50, 100, 200]:
+        for num_workers in [1, 30, 60]:
+            if num_workers < budget:
+                for fu in funcs:
+                    xp = Experiment(fu, optims, budget, num_workers=num_workers, seed=next(seedg))
+                    skip_ci(reason="Too slow")
+                    if not xp.is_incoherent:
+                        yield xp
 
 def crop_simulator(seed: tp.Optional[int] = None) -> tp.Iterator[Experiment]:
     """Crop simulator.

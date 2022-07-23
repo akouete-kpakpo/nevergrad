@@ -28,7 +28,7 @@ tensorflow>=2.7.0
 image-quality>=1.2.7
 keras>=2.4.3
 compiler_gym>=0.1.8 ; sys_platform == "linux"
-loop-tool-py==0.0.6
+# loop-tool-py<=0.0.6
 pymoo>=0.4.2.2
 olymp==0.0.1b0 ; sys_platform == "linux"
 silence_tensorflow  # for olymp

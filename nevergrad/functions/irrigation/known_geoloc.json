@@ -42,5 +42,9 @@
     "Kiev": {
         "latitude": 50.4500336,
         "longitude": 30.5241361
+    },
+    "Porto-Novo":{
+        "latitude":6.515052473722593 ,
+        "longitude": 2.5889961931913628
     }
 }
