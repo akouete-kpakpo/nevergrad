@@ -16,12 +16,14 @@ import os
 import urllib.request
 import warnings
 from pathlib import Path
+from typing import Optional
 
 import nevergrad as ng
 import numpy as np
 import pandas as pd
 import yaml
-from nevergrad.functions.irrigation.common_path import IRRIGATION_DATA_DIR, IRRIGATION_DIR
+from nevergrad.functions.irrigation.common_path import IRRIGATION_DIR
+from urlpath import URL
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -38,15 +40,14 @@ with open(IRRIGATION_DIR / "known_geoloc.json") as fhandle:
     KNOWN_GEOLOCS = json.load(fhandle)
 
 
+SOIL_DATA_URL = URL("https://raw.githubusercontent.com/ajwdewit/pcse_notebooks/master/", "data/soil/ec3.soil")
+
+
 class Irrigation(ArrayExperimentFunction):
     variant_choice = {}
 
     def __init__(self, symmetry: int, n_iterations: int = 1000) -> None:
-        urllib.request.urlretrieve(
-            "https://raw.githubusercontent.com/ajwdewit/pcse_notebooks/master/data/soil/ec3.soil",
-            Path(IRRIGATION_DATA_DIR, "soil/ec3.soil"),
-        )
-        self.soil = CABOFileReader(Path(IRRIGATION_DATA_DIR, "soil", "ec3.soil"))
+        self.soil = get_soil_data()
         param = ng.p.Array(shape=(8,), lower=(0.0), upper=(1.0)).set_name("irrigation8")
         super().__init__(self.leaf_area_index, parametrization=param, symmetry=symmetry)
         if os.environ.get("CIRCLECI", False):
@@ -124,6 +125,17 @@ class Irrigation(ArrayExperimentFunction):
         df.tail()
 
         return -sum([float(o["LAI"]) for o in output if o["LAI"] is not None])
+
+
+def get_soil_data(soil_data_url: URL = SOIL_DATA_URL, soilfile: Optional[Path] = None) -> dict:
+    if soilfile is None:
+        soilfile = Path(IRRIGATION_DIR, *soil_data_url.parts[-3:])
+    if not soilfile.exists():
+        urllib.request.urlretrieve(
+            soil_data_url.as_posix(),
+            soilfile,
+        )
+    return CABOFileReader(soilfile)
 
 
 def get_weather_data_provider(address: str, known_geolocs: dict = KNOWN_GEOLOCS):

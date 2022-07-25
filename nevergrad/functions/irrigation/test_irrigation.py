@@ -48,3 +48,15 @@ def test_irrigation_is_non_positive() -> None:
 
     # Then
     assert value <= 0.0
+
+
+@pytest.mark.ut
+def test_get_soil_data_returns_correct_values():
+    # Given
+    from nevergrad.functions.irrigation.irrigation import get_soil_data
+
+    # When
+    soil_data = get_soil_data()
+
+    # Then
+    assert soil_data["SOLNAM"] == "EC3-medium fine"
