@@ -1,6 +1,0 @@
-ranking:
-  algo 0: DE (9/9)
-  algo 1: CMA (9/9)
-  algo 2: NGOpt10 (9/9)
-  algo 3: MetaModel (9/9)
-  algo 4: CMandAS2 (9/9)

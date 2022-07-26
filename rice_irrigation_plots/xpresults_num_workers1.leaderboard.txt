@@ -1,5 +1,0 @@
-Best performance:
-  budget 25: -624.0728734264243 (DE) (rice_irrigation_plots\xpresults_num_workers1.leaderboard.txt)
-  budget 50: -624.0728734264243 (DE) (rice_irrigation_plots\xpresults_num_workers1.leaderboard.txt)
-  budget 100: -624.0728734264243 (DE) (rice_irrigation_plots\xpresults_num_workers1.leaderboard.txt)
-  budget 200: -624.0728734264243 (DE) (rice_irrigation_plots\xpresults_num_workers1.leaderboard.txt)
