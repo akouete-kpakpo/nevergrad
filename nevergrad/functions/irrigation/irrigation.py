@@ -55,8 +55,10 @@ class Irrigation(ArrayExperimentFunction):
         if os.environ.get("CIRCLECI", False):
             raise ng.errors.UnsupportedExperiment("No HTTP request in CircleCI")
 
+        
+        
         self.cropd = YAMLCropDataProvider(
-            repository="https://raw.githubusercontent.com/ajwdewit/WOFOST_crop_parameters/master/"
+            repository= "https://github.com/ajwdewit/pcse_notebooks/blob/master/data/crop/SUG0601.crop"
         )
         self.address = "Porto-Novo"
         for k in range(n_iterations):
