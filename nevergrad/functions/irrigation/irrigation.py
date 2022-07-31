@@ -73,8 +73,8 @@ class Irrigation(ArrayExperimentFunction):
         logging.info(f"we work on {self.cropname} with variety {self.cropvariety} in {self.address}.")
 
     def set_data(self, symmetry: int, k: int):
-        self.cropname = "betterave"
-        self.cropvariety = "sugar-beet-601"
+        self.cropname = "sugarbeet"
+        self.cropvariety = "Sugar-beet-601"
         # We check if the problem is challenging.
         # print(f"testing {symmetry}: {k} {self.address} {self.cropvariety}")
         site = WOFOST72SiteDataProvider(WAV=100)
