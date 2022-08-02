@@ -58,7 +58,7 @@ class Irrigation(ArrayExperimentFunction):
         
         
         self.cropd = YAMLCropDataProvider(
-            repository= "https://github.com/ajwdewit/pcse_notebooks/blob/master/data/crop/SUG0601.crop"
+            repository= "https://raw.githubusercontent.com/ajwdewit/WOFOST_crop_parameters/master/"
         )
         self.address = "Porto-Novo"
         for k in range(n_iterations):
