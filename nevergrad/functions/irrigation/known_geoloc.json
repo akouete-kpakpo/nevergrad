@@ -46,5 +46,9 @@
     "Porto-Novo": {
         "latitude": 6.515052473722593,
         "longitude": 2.5889961931913628
+    },
+    "Wageningen": {
+        "latitude": 51.97,
+        "longitude": 5.67
     }
 }
