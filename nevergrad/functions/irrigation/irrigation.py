@@ -20,7 +20,6 @@ from typing import Optional
 
 import nevergrad as ng
 import numpy as np
-import pandas as pd
 import yaml
 from nevergrad.functions.irrigation.common_path import IRRIGATION_DIR
 from urlpath import URL
@@ -42,7 +41,7 @@ with open(IRRIGATION_DIR / "known_geoloc.json") as fhandle:
 dimension = 8
 
 
-SOIL_DATA_URL = URL("https://raw.githubusercontent.com/ajwdewit/pcse_notebooks/master/", "data/soil/ec3.soil")
+SOIL_DATA_URL = URL("https://raw.githubusercontent.com/ajwdewit/pcse_notebooks/master", "data/soil/ec3.soil")
 
 
 class Irrigation(ArrayExperimentFunction):
