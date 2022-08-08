@@ -59,6 +59,7 @@ class Irrigation(ArrayExperimentFunction):
             repository="https://raw.githubusercontent.com/ajwdewit/WOFOST_crop_parameters/master/"
         )
         self.address = "Wageningen"
+        self.weatherdataprovider = get_weather_data_provider(self.address)
         for k in range(n_iterations):
             if symmetry in self.variant_choice and k < self.variant_choice[symmetry]:
                 continue
@@ -114,6 +115,7 @@ class Irrigation(ArrayExperimentFunction):
             wofost = Wofost72_WLP_FD(self.parameterprovider, self.weatherdataprovider, agromanagement)
             wofost.run_till_terminate()
         except Exception as e:
+            print(e)
             return float("inf")
             # assert (
             #    False
