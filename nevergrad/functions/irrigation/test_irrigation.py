@@ -24,7 +24,6 @@ def test_irrigation_is_deterministic() -> None:
 
 
 @pytest.mark.ut
-@pytest.mark.skip("TODO")
 def test_irrigation_is_not_flat() -> None:
     # Given
     x = np.random.rand(func.dimension)
