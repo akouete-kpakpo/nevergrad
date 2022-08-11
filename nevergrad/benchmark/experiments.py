@@ -11,8 +11,7 @@ import warnings
 import nevergrad as ng
 import nevergrad.functions.corefuncs as corefuncs
 import numpy as np
-from nevergrad.functions import (ArtificialFunction, ExperimentFunction,
-                                 FarOptimumFunction)
+from nevergrad.functions import ArtificialFunction, ExperimentFunction, FarOptimumFunction
 from nevergrad.functions import base as fbase
 from nevergrad.functions import control, helpers
 from nevergrad.functions import images as imagesxp
@@ -1279,7 +1278,7 @@ def rice_irrigation(seed: tp.Optional[int] = None) -> tp.Iterator[Experiment]:
     """Irrigation simulator. Maximize leaf area index,
     so that you get a lot of primary production.
     Sequential or 30 workers."""
-    funcs = [Irrigation(10)]
+    funcs = [Irrigation(i) for i in range(17)]
     seedg = create_seed_generator(seed)
     optims = ["NGOpt10"]
     for budget in [100]:
